@@ -28,7 +28,6 @@ public class WellnessMonitoringService implements ApplicationEventPublisherAware
 
     private void checkTemperatureAlerts(WellnessMetric metric) {
         Float temperature = metric.getEnvironmentalConditions().temperatureCelsius();
-        Float humidity = metric.getEnvironmentalConditions().humidityPercentage();
 
         // Alertas de temperatura
         if (temperature > 40) {
@@ -43,13 +42,6 @@ public class WellnessMonitoringService implements ApplicationEventPublisherAware
             ));
         }
 
-        // Alertas de humedad
-        if (humidity > 80) {
-            eventPublisher.publishEvent(new EnvironmentalConditionAlertEvent(
-                    this, metric.getVehicleId(), metric.getEnvironmentalConditions(),
-                    "HIGH_HUMIDITY", "LOW"
-            ));
-        }
     }
 
     private void checkAirQualityAlerts(WellnessMetric metric) {

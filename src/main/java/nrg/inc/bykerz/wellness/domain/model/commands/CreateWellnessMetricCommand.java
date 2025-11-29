@@ -13,7 +13,6 @@ public record CreateWellnessMetricCommand(
         Double BenzenePpm,
 
         Float temperatureCelsius,
-        Float humidityPercentage,
 
         Float pressureHpa,
 
