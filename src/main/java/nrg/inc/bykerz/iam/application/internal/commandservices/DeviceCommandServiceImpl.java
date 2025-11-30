@@ -24,17 +24,18 @@ public class DeviceCommandServiceImpl implements DeviceCommandService {
 
     @Override
     public Optional<Device> handle(RegisterDeviceCommand registerDeviceCommand) {
-        if (deviceRepository.existsById(registerDeviceCommand.deviceId())) {
+
+        if (deviceRepository.existsByDeviceId(registerDeviceCommand.deviceId())) {
             throw new IllegalArgumentException("Device already exists");
         }
-        var device = new Device(registerDeviceCommand.deviceId(), 0L);
+        var device = new Device(registerDeviceCommand.deviceId(), registerDeviceCommand.vehicleId());
         deviceRepository.save(device);
         return Optional.of(device);
     }
 
     @Override
     public Optional<ImmutablePair<Device, String>> handle(ValidateDeviceCommand validateDeviceCommand) {
-        var device = deviceRepository.findById(validateDeviceCommand.deviceId());
+        var device = deviceRepository.findByDeviceId(validateDeviceCommand.deviceId());
 
         if (device.isEmpty()) {
             throw new IllegalArgumentException("Device does not exist");
