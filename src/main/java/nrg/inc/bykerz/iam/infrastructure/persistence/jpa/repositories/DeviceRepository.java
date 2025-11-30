@@ -2,9 +2,12 @@ package nrg.inc.bykerz.iam.infrastructure.persistence.jpa.repositories;
 
 import nrg.inc.bykerz.iam.domain.model.aggregates.Device;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-public interface DeviceRepository extends JpaRepository<Device, String> {
-    Optional<Device> findByVehicleId(String vehicleId);
+@Repository
+public interface DeviceRepository extends JpaRepository<Device, Long> {
+    Optional<Device> findByDeviceId(String deviceId);
+    boolean existsByDeviceId(String deviceId);
 }
