@@ -11,7 +11,9 @@ import nrg.inc.bykerz.assignments.domain.model.queries.GetMechanicByIdQuery;
 import nrg.inc.bykerz.assignments.domain.services.AssignmentQueryService;
 import nrg.inc.bykerz.assignments.domain.services.MechanicCommandService;
 import nrg.inc.bykerz.assignments.domain.services.MechanicQueryService;
+import nrg.inc.bykerz.assignments.interfaces.rest.resources.MechanicResource;
 import nrg.inc.bykerz.assignments.interfaces.rest.resources.UpdateMechanicMembershipTypeResource;
+import nrg.inc.bykerz.assignments.interfaces.rest.transform.MechanicResourceFromEntityAssembler;
 import nrg.inc.bykerz.assignments.interfaces.rest.transform.UpdateMechanicMembershipTypeCommandFromResourceAssembler;
 import nrg.inc.bykerz.shared.application.internal.outboundservices.acl.ExternalVehiclesService;
 import nrg.inc.bykerz.vehicles.interfaces.rest.resources.OwnerResource;
@@ -73,7 +75,7 @@ public class MechanicController {
             @ApiResponse(responseCode = "404", description = "Mechanic not found")
     }
     )
-    public ResponseEntity<Mechanic> updateMechanicMembershipType(
+    public ResponseEntity<MechanicResource> updateMechanicMembershipType(
             @PathVariable Long mechanicId,
             @RequestBody UpdateMechanicMembershipTypeResource updateMechanicMembershipTypeResource) {
 
@@ -86,7 +88,8 @@ public class MechanicController {
             return ResponseEntity.status(404).body(null);
         } else {
             var updatedMechanic = updatedMechanicOpt.get();
-            return ResponseEntity.status(200).body(updatedMechanic);
+            var updatedMechanicResource = MechanicResourceFromEntityAssembler.toResourceFromEntity(updatedMechanic);
+            return ResponseEntity.status(200).body(updatedMechanicResource);
         }
 
 
