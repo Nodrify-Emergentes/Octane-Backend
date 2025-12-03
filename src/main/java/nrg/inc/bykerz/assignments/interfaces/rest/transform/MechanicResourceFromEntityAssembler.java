@@ -7,7 +7,8 @@ public class MechanicResourceFromEntityAssembler {
     public static MechanicResource toResourceFromEntity(Mechanic entity) {
         return new MechanicResource(
                 entity.getId(),
-                entity.getName()
+                entity.getName(),
+                entity.getMembershipType()
         );
     }
 }
