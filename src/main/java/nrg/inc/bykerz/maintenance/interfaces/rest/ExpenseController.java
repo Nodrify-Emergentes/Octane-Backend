@@ -41,7 +41,7 @@ public class ExpenseController {
     }
 
     @GetMapping
-    @Operation(summary = "Get All Expenses", description = "Get All Expenses of an Owner")
+    @Operation(summary = "Get All Expenses By Owner", description = "Get All Expenses of an Owner Token")
     public ResponseEntity<List<ExpenseResource>> getAllExpenses(@AuthenticationPrincipal UserDetails userDetails){
         String username = userDetails.getUsername();
         var getUserByUsernameQuery = new GetUserByUsernameQuery(username);
