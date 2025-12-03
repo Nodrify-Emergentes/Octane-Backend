@@ -35,7 +35,7 @@ public class WellnessMetric extends AuditableAbstractAggregateRoot<WellnessMetri
         this.vehicleId=createWellnessMetricCommand.vehicleId();
         this.coordinates=new Coordinates(createWellnessMetricCommand.latitude(), createWellnessMetricCommand.longitude());
         this.airQuality=new AirQuality(createWellnessMetricCommand.CO2Ppm(), createWellnessMetricCommand.NH3Ppm(), createWellnessMetricCommand.BenzenePpm());
-        this.environmentalConditions=new EnvironmentalConditions(createWellnessMetricCommand.temperatureCelsius(), createWellnessMetricCommand.humidityPercentage());
+        this.environmentalConditions=new EnvironmentalConditions(createWellnessMetricCommand.temperatureCelsius());
         this.atmosphericPressure=new AtmosphericPressure(createWellnessMetricCommand.pressureHpa());
         this.statusImpact=new StatusImpact(createWellnessMetricCommand.impactDetected());
         this.registeredAt=LocalDateTime.now();
@@ -45,7 +45,7 @@ public class WellnessMetric extends AuditableAbstractAggregateRoot<WellnessMetri
 
         setCoordinates(updateWellnessMetricCommand.latitude(),updateWellnessMetricCommand.longitude());
         setAirQuality(updateWellnessMetricCommand.CO2Ppm(),updateWellnessMetricCommand.NH3Ppm(),updateWellnessMetricCommand.BenzenePpm());
-        setEnvironmentalConditions(updateWellnessMetricCommand.temperatureCelsius(),updateWellnessMetricCommand.humidityPercentage());
+        setEnvironmentalConditions(updateWellnessMetricCommand.temperatureCelsius());
         setAtmosphericPressure(updateWellnessMetricCommand.pressureHpa());
         setStatusImpact(updateWellnessMetricCommand.impactDetected());
 
@@ -60,8 +60,8 @@ public class WellnessMetric extends AuditableAbstractAggregateRoot<WellnessMetri
         this.airQuality=new AirQuality(CO2Ppm,NH3Ppm,BenzenePpm);
     }
 
-    private void setEnvironmentalConditions(Float temperatureCelsius,Float humidityPercentage){
-        this.environmentalConditions=new EnvironmentalConditions(temperatureCelsius,humidityPercentage);
+    private void setEnvironmentalConditions(Float temperatureCelsius){
+        this.environmentalConditions=new EnvironmentalConditions(temperatureCelsius);
     }
 
     private void setAtmosphericPressure(Float pressureHPa) {

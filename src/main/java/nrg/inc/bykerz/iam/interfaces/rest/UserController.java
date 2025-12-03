@@ -159,7 +159,7 @@ public class UserController {
     }
 
 
-    @GetMapping("/email/{username}")
+    @GetMapping("/username/{username}")
     @Operation(summary = "Get a user by username", description = "Retrieves a user by username.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User retrieved successfully"),

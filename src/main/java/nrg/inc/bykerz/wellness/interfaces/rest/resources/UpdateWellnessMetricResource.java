@@ -12,7 +12,6 @@ public record UpdateWellnessMetricResource (
         Double BenzenePpm,
 
         Float temperatureCelsius,
-        Float humidityPercentage,
 
         Float pressureHpa,
 
