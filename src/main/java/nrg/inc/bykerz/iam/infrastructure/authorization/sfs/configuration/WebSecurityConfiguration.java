@@ -79,6 +79,7 @@ public class WebSecurityConfiguration {
                                 "/api/v1/devices/authentication/**",
                                 "/api/v1/assignments/code/**",
                                 "/api/v1/users/owner",
+                                "/api/v1/metrics",
                                 "/v3/api-docs/**",
                                 "/api-docs/**",
                                 "/swagger-ui/**",

@@ -59,7 +59,7 @@ public class DeviceAuthenticationController {
             value = {
                     @ApiResponse(responseCode = "201", description = "Device registered successfully"),
                     @ApiResponse(responseCode = "400", description = "Bad Request")})
-    public ResponseEntity<DeviceResource> registerDevice(@RequestBody RegisterDeviceResource registerDeviceResource) {
+    public ResponseEntity<AuthenticatedDeviceResource> registerDevice(@RequestBody RegisterDeviceResource registerDeviceResource) {
         var registerDeviceCommand = RegisterDeviceCommandFromResourceAssembler.toCommandFromResource(registerDeviceResource);
 
         var device = deviceCommandService.handle(registerDeviceCommand);
@@ -67,8 +67,19 @@ public class DeviceAuthenticationController {
         if (device.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
-        var deviceResource = DeviceResourceFromEntityAssembler.toResourceFromEntity(device.get());
 
-        return new ResponseEntity<>(deviceResource, HttpStatus.CREATED);
+        var validateDeviceCommand = ValidateDeviceCommandFromResourceAssembler.toCommandFromResource(
+                new ValidateDeviceResource(registerDeviceResource.deviceId())
+        );
+
+        var validatedDevice = deviceCommandService.handle(validateDeviceCommand);
+
+        if (validatedDevice.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var authenticatedDeviceResource = AuthenticatedDeviceResourceFromEntityAssembler.toResourceFromEntity(validatedDevice.get().getLeft(), validatedDevice.get().getRight());
+
+        return ResponseEntity.ok(authenticatedDeviceResource);
     }
 }

@@ -28,7 +28,8 @@ public class DeviceCommandServiceImpl implements DeviceCommandService {
     @Override
     public Optional<Device> handle(RegisterDeviceCommand registerDeviceCommand) {
         if (deviceRepository.existsByDeviceId(registerDeviceCommand.deviceId())) {
-            throw new IllegalArgumentException("Device already exists");
+            var existingDevice = deviceRepository.findByDeviceId(registerDeviceCommand.deviceId());
+            existingDevice.ifPresent(deviceRepository::delete);
         }
 
         var vehicle = externalVehiclesService.fetchVehicleById(registerDeviceCommand.vehicleId());
