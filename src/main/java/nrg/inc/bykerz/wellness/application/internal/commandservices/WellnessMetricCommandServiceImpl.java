@@ -10,6 +10,7 @@ import nrg.inc.bykerz.wellness.domain.services.WellnessMonitoringService;
 import nrg.inc.bykerz.wellness.infrastructure.persistence.jpa.repositories.WellnessMetricRepository;
 import org.springframework.stereotype.Service;
 
+import java.io.Console;
 import java.util.Optional;
 
 @Service
@@ -27,7 +28,8 @@ public class WellnessMetricCommandServiceImpl implements WellnessMetricCommandSe
 
     @Override
     public Long handle(CreateWellnessMetricCommand createWellnessMetricCommand) {
-
+        System.out.println("Creating metric...");
+        System.out.println("Fetch vehicle by id");
         //Validate the vehicle exists
         var vehicleOpt =externalVehicleService.fetchVehicleById(createWellnessMetricCommand.vehicleId());
 
@@ -35,9 +37,11 @@ public class WellnessMetricCommandServiceImpl implements WellnessMetricCommandSe
             throw new IllegalArgumentException( "Vehicle with id " + createWellnessMetricCommand.vehicleId() + " does not exist");
         }
 
+        System.out.println("Creating metric...");
         //Create the wellness metric
         var wellnessMetric = new WellnessMetric(createWellnessMetricCommand);
 
+        System.out.println("Saving metric...");
         try{
             var savedMetric = wellnessMetricRepository.save(wellnessMetric);
             // Check for alerts after saving the metric
