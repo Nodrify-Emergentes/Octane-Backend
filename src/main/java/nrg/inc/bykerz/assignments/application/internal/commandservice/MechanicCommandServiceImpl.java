@@ -1,9 +1,9 @@
 package nrg.inc.bykerz.assignments.application.internal.commandservice;
 
+import nrg.inc.bykerz.assignments.domain.model.commands.UpdateMechanicMembershipTypeCommand;
 import nrg.inc.bykerz.profiles.infrastructure.persistence.jpa.repositories.ProfileRepository;
 import nrg.inc.bykerz.assignments.domain.model.aggregates.Mechanic;
 import nrg.inc.bykerz.assignments.domain.model.commands.CreateMechanicCommand;
-import nrg.inc.bykerz.assignments.domain.model.valueobjects.AssignmentCode;
 import nrg.inc.bykerz.assignments.domain.services.MechanicCommandService;
 import nrg.inc.bykerz.assignments.infrastructure.persistence.jpa.repositories.MechanicRepository;
 import org.springframework.stereotype.Service;
@@ -31,5 +31,19 @@ public class MechanicCommandServiceImpl implements MechanicCommandService {
         var mechanic = new Mechanic(profile);
         var savedMechanic = mechanicRepository.save(mechanic);
         return Optional.of(savedMechanic);
+    }
+
+    @Override
+    public Optional<Mechanic> handle(UpdateMechanicMembershipTypeCommand updateMechanicMembershipTypeCommand) {
+       var mechanicOpt = mechanicRepository.findById(updateMechanicMembershipTypeCommand.mechanicId());
+
+       if (mechanicOpt.isEmpty()) {
+           throw new IllegalArgumentException("Invalid mechanic id: " + updateMechanicMembershipTypeCommand.mechanicId());
+       } else {
+           var mechanic = mechanicOpt.get();
+           mechanic.setMembershipType(updateMechanicMembershipTypeCommand);
+           return Optional.of(mechanicRepository.save(mechanic));
+       }
+
     }
 }

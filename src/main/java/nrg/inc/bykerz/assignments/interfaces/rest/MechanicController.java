@@ -1,19 +1,25 @@
 package nrg.inc.bykerz.assignments.interfaces.rest;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import nrg.inc.bykerz.assignments.domain.model.aggregates.Mechanic;
+import nrg.inc.bykerz.assignments.domain.model.commands.UpdateMechanicMembershipTypeCommand;
 import nrg.inc.bykerz.assignments.domain.model.queries.GetAssignmentsByMechanicIdAndStatusQuery;
 import nrg.inc.bykerz.assignments.domain.model.queries.GetMechanicByIdQuery;
 import nrg.inc.bykerz.assignments.domain.services.AssignmentQueryService;
+import nrg.inc.bykerz.assignments.domain.services.MechanicCommandService;
 import nrg.inc.bykerz.assignments.domain.services.MechanicQueryService;
+import nrg.inc.bykerz.assignments.interfaces.rest.resources.MechanicResource;
+import nrg.inc.bykerz.assignments.interfaces.rest.resources.UpdateMechanicMembershipTypeResource;
+import nrg.inc.bykerz.assignments.interfaces.rest.transform.MechanicResourceFromEntityAssembler;
+import nrg.inc.bykerz.assignments.interfaces.rest.transform.UpdateMechanicMembershipTypeCommandFromResourceAssembler;
 import nrg.inc.bykerz.shared.application.internal.outboundservices.acl.ExternalVehiclesService;
 import nrg.inc.bykerz.vehicles.interfaces.rest.resources.OwnerResource;
 import nrg.inc.bykerz.vehicles.interfaces.rest.transform.OwnerResourceFromEntityAssembler;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -24,11 +30,13 @@ import java.util.Objects;
 public class MechanicController {
     private final AssignmentQueryService assignmentQueryService;
     private final MechanicQueryService mechanicQueryService;
+    private final MechanicCommandService mechanicCommandService;
     private final ExternalVehiclesService externalVehiclesService;
-    public MechanicController(AssignmentQueryService assignmentQueryService, MechanicQueryService mechanicQueryService, ExternalVehiclesService externalVehiclesService) {
+    public MechanicController(AssignmentQueryService assignmentQueryService, MechanicQueryService mechanicQueryService,MechanicCommandService mechanicCommandService, ExternalVehiclesService externalVehiclesService) {
         this.assignmentQueryService = assignmentQueryService;
         this.mechanicQueryService = mechanicQueryService;
         this.externalVehiclesService = externalVehiclesService;
+        this.mechanicCommandService = mechanicCommandService;
     }
 
     @GetMapping("{mechanicId}/owners")
@@ -57,5 +65,34 @@ public class MechanicController {
                 .toList();
 
         return ResponseEntity.ok(ownerResources);
+    }
+
+    @PutMapping("{mechanicId}/membership")
+    @Operation(summary = "Update Mechanic Membership Type", description = "Update the membership type of the specified mechanic.")
+    @ApiResponses(value ={
+            @ApiResponse(responseCode = "200", description = "Membership type updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "404", description = "Mechanic not found")
+    }
+    )
+    public ResponseEntity<MechanicResource> updateMechanicMembershipType(
+            @PathVariable Long mechanicId,
+            @RequestBody UpdateMechanicMembershipTypeResource updateMechanicMembershipTypeResource) {
+
+        //Create the command from resource
+        UpdateMechanicMembershipTypeCommand command = UpdateMechanicMembershipTypeCommandFromResourceAssembler.toCommandFromResource(mechanicId,updateMechanicMembershipTypeResource);
+        // Handle the command by the service
+        var updatedMechanicOpt = mechanicCommandService.handle(command);
+        // Check if the mechanic was found and updated
+        if (updatedMechanicOpt.isEmpty()) {
+            return ResponseEntity.status(404).body(null);
+        } else {
+            var updatedMechanic = updatedMechanicOpt.get();
+            var updatedMechanicResource = MechanicResourceFromEntityAssembler.toResourceFromEntity(updatedMechanic);
+            return ResponseEntity.status(200).body(updatedMechanicResource);
+        }
+
+
+
     }
 }

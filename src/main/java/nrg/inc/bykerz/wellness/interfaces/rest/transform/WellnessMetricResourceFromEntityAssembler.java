@@ -18,7 +18,6 @@ public class WellnessMetricResourceFromEntityAssembler {
                 entity.getAirQuality().BenzenePpm(),
 
                 entity.getEnvironmentalConditions().temperatureCelsius(),
-                entity.getEnvironmentalConditions().humidityPercentage(),
 
                 entity.getAtmosphericPressure().pressureHpa(),
 

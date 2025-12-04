@@ -34,12 +34,11 @@ public class EnvironmentalConditionAlertEvent extends ApplicationEvent {
      */
     public String getDescription() {
         return String.format(
-                "Environmental alert for vehicle %d - Type: %s, Severity: %s, Temp: %.1f°C, Humidity: %.1f%%",
+                "Environmental alert for vehicle %d - Type: %s, Severity: %s, Temp: %.1f°C",
                 vehicleId,
                 alertType,
                 severity,
-                environmentalConditions.temperatureCelsius(),
-                environmentalConditions.humidityPercentage()
+                environmentalConditions.temperatureCelsius()
         );
     }
 }

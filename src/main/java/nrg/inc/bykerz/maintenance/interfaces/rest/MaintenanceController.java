@@ -9,6 +9,7 @@ import nrg.inc.bykerz.maintenance.domain.model.commands.UpdateStateOfMaintenance
 import nrg.inc.bykerz.maintenance.domain.model.queries.GetAllMaintenancesByMechanicIdQuery;
 import nrg.inc.bykerz.maintenance.domain.model.queries.GetAllMaintenancesByVehicleIdQuery;
 import nrg.inc.bykerz.maintenance.domain.model.queries.GetMaintenanceByIdQuery;
+import nrg.inc.bykerz.maintenance.domain.model.queries.GetMaintenancesByOwnerIdQuery;
 import nrg.inc.bykerz.maintenance.domain.services.MaintenanceCommandService;
 import nrg.inc.bykerz.maintenance.domain.services.MaintenanceQueryService;
 import nrg.inc.bykerz.maintenance.interfaces.rest.resources.CreateMaintenanceResource;
@@ -61,6 +62,21 @@ public class MaintenanceController {
 
         return ResponseEntity.ok(maintenancesResources);
     }
+
+    @GetMapping("/owner/{ownerId}")
+    @Operation(summary = "Get Maintenances By Owner Id", description = "Get all the maintenances of a vehicle by an owner id" )
+    public ResponseEntity<List<MaintenanceResource>> getMaintenancesByOwnerId(@PathVariable Long ownerId){
+
+        var maintenancesList = maintenanceQueryService.handle(new GetMaintenancesByOwnerIdQuery(ownerId));
+
+        var maintenancesResources = maintenancesList.stream()
+                .map(MaintenanceResourceFromEntityAssembler::toResourceFromEntity)
+                .toList();
+
+        return ResponseEntity.ok(maintenancesResources);
+
+    }
+
 
     @DeleteMapping("/{maintenanceId}")
     @Operation(summary = "Delete Maintenance By Id", description = "delete a maintenance by its id")

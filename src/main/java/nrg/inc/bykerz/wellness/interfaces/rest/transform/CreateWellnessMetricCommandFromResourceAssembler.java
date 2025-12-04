@@ -16,7 +16,6 @@ public class CreateWellnessMetricCommandFromResourceAssembler {
                 resource.BenzenePpm(),
 
                 resource.temperatureCelsius(),
-                resource.humidityPercentage(),
 
                 resource.pressureHpa(),
 
