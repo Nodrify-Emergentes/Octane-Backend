@@ -18,9 +18,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // ✅ SOLO WebSocket nativo - elimina .withSockJS()
+        
         registry.addEndpoint("/ws-wellness")
                 .setAllowedOriginPatterns("*");
-        // ← SIN .withSockJS()
+        
     }
 }
