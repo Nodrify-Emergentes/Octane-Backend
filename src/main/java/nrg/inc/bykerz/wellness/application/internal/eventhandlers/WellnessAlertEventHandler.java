@@ -35,7 +35,7 @@ public class WellnessAlertEventHandler {
         var notificationId = notificationCommandService.handle(command);
         sendNotificationViaWebSocket(event.getVehicleId(), notificationId);
 
-        System.out.println("✅ Air quality notification created: " + event.getDescription());
+        System.out.println("Air quality notification created: " + event.getDescription());
     }
 
     @EventListener(AtmosphericPressureAlertEvent.class)
@@ -51,7 +51,7 @@ public class WellnessAlertEventHandler {
 
         Long notificationId=notificationCommandService.handle(command);
         sendNotificationViaWebSocket(event.getVehicleId(), notificationId);
-        System.out.println("✅ Pressure notification created: " + event.getDescription());
+        System.out.println("Pressure notification created: " + event.getDescription());
     }
 
     @EventListener(EnvironmentalConditionAlertEvent.class)
@@ -67,7 +67,7 @@ public class WellnessAlertEventHandler {
 
         Long notificationId = notificationCommandService.handle(command);
         sendNotificationViaWebSocket(event.getVehicleId(), notificationId);
-        System.out.println("✅ Environmental notification created: " + event.getDescription());
+        System.out.println("Environmental notification created: " + event.getDescription());
     }
 
     @EventListener(StatusImpactAlertEvent.class)
@@ -83,7 +83,7 @@ public class WellnessAlertEventHandler {
 
         Long notificationId = notificationCommandService.handle(command);
         sendNotificationViaWebSocket(event.getVehicleId(), notificationId);
-        System.out.println("🚨 Impact notification created: " + event.getDescription());
+        System.out.println("Impact notification created: " + event.getDescription());
     }
 
 
@@ -98,7 +98,7 @@ public class WellnessAlertEventHandler {
                 // También enviar por tipo de alerta
                 webSocketController.sendAlertByType("AIR_QUALITY", notification);
             } catch (Exception e) {
-                System.err.println("❌ Failed to send WebSocket alert for vehicle " + vehicleId + ": " + e.getMessage());
+                System.err.println("Failed to send WebSocket alert for vehicle " + vehicleId + ": " + e.getMessage());
             }
         }
     }
