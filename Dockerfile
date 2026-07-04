@@ -8,7 +8,7 @@ RUN mvn clean install -DskipTests
 
 FROM openjdk:26-ea-21-slim
 WORKDIR /opt/app/
-COPY --from=build /opt/app/target/bykerz-0.0.1-SNAPSHOT.jar bykerz-backend.jar
+COPY --from=build /opt/app/target/octane-0.0.1-SNAPSHOT.jar octane-backend.jar
 
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
@@ -18,4 +18,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
   CMD curl -f http://localhost:8080/actuator/health || exit 1
 
 
-ENTRYPOINT ["java", "-jar", "bykerz-backend.jar"]
+ENTRYPOINT ["java", "-jar", "octane-backend.jar"]
