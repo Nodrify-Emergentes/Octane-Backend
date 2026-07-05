@@ -17,7 +17,7 @@ public class WellnessSummary extends AuditableAbstractAggregateRoot<WellnessSumm
     @Enumerated(EnumType.STRING)
     private SummaryStatus status;
 
-    @Column(length = 200)
+    @Column(length = 400)
     private String summary;
 
     public WellnessSummary() {
@@ -38,14 +38,9 @@ public class WellnessSummary extends AuditableAbstractAggregateRoot<WellnessSumm
         this.summary = summary;
     }
 
-    public void markFailed(String summary) {
+    public void markFailed() {
         this.status = SummaryStatus.FAILED;
-        this.summary = summary;
-    }
-
-    public void markStale(String summary) {
-        this.status = SummaryStatus.STALE;
-        this.summary = summary;
+        this.summary = "Failed to generate a response from latest metrics.";
     }
 
     public Long getVehicleId() { return vehicleId.vehicleId(); }

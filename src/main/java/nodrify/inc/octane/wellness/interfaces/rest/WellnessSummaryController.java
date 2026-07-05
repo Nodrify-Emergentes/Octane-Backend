@@ -28,10 +28,17 @@ public class WellnessSummaryController {
     }
 
     @PostMapping("/{vehicleId}/wellness-summary")
-    @Operation(summary = "Force generate a wellness summary for a vehicle")
-    public ResponseEntity<Void> generateSummaryByVehicleId(@PathVariable Long vehicleId) {
-        wellnessSummaryCommandService.handle(new GenerateWellnessSummaryCommand(vehicleId));
-        return ResponseEntity.accepted().build();
+    @Operation(summary = "Generate a wellness summary for a vehicle")
+    public ResponseEntity<WellnessSummaryResource> generateSummaryByVehicleId(@PathVariable Long vehicleId) {
+        var generateWellnessSummaryCommand = new GenerateWellnessSummaryCommand(vehicleId);
+
+        var summary = wellnessSummaryCommandService.handle(generateWellnessSummaryCommand);
+
+        if (summary.isEmpty()) { return ResponseEntity.notFound().build(); }
+
+        var summaryResource = WellnessSummaryResourceFromEntityAssembler.toResourceFromEntity(summary.get());
+
+        return ResponseEntity.ok(summaryResource);
     }
 
     @GetMapping("/{vehicleId}/wellness-summary")

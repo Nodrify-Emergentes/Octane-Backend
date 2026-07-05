@@ -9,7 +9,8 @@ public class WellnessSummaryResourceFromEntityAssembler {
                 entity.getId(),
                 entity.getVehicleId(),
                 entity.getSummaryStatus(),
-                entity.getSummary()
+                entity.getSummary(),
+                entity.getUpdatedAt()
         );
     }
 }
