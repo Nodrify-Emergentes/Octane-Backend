@@ -9,6 +9,7 @@ import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,6 +17,9 @@ import java.util.List;
 
 @Configuration
 public class OpenApiConfiguration {
+
+    @Value("${API_URL}")
+    private String apiUrl;
 
     @Bean
     public OpenAPI octaneOpenApi() {
@@ -35,13 +39,13 @@ public class OpenApiConfiguration {
                                 .url("https://www.apache.org/licenses/LICENSE-2.0")))
                 .externalDocs(new ExternalDocumentation()
                         .description("Octane Platform Documentation")
-                        .url("http://localhost:8080/swagger-ui/index.html"))
+                        .url(apiUrl + "/swagger-ui/index.html"))
                 .servers(List.of(
                         new Server()
                                 .url("http://localhost:8080")
                                 .description("Local Development Server"),
                         new Server()
-                                .url("https://octane-backend.onrender.com")
+                                .url(apiUrl)
                                 .description("Production Server")
                 ));
 
