@@ -2,6 +2,7 @@ package nodrify.inc.octane.wellness.application.internal.eventhandlers;
 
 import lombok.RequiredArgsConstructor;
 import nodrify.inc.octane.wellness.domain.model.commands.CreateNotificationCommand;
+import nodrify.inc.octane.wellness.domain.model.commands.GenerateWellnessSummaryCommand;
 import nodrify.inc.octane.wellness.domain.model.events.AirQualityAlertEvent;
 import nodrify.inc.octane.wellness.domain.model.events.AtmosphericPressureAlertEvent;
 import nodrify.inc.octane.wellness.domain.model.events.EnvironmentalConditionAlertEvent;
@@ -9,9 +10,12 @@ import nodrify.inc.octane.wellness.domain.model.events.StatusImpactAlertEvent;
 import nodrify.inc.octane.wellness.domain.model.queries.GetNotificationByIdQuery;
 import nodrify.inc.octane.wellness.domain.services.NotificationCommandService;
 import nodrify.inc.octane.wellness.domain.services.NotificationQueryService;
+import nodrify.inc.octane.wellness.domain.services.WellnessSummaryCommandService;
 import nodrify.inc.octane.wellness.interfaces.websocket.WellnessWebSocketController;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +24,7 @@ public class WellnessAlertEventHandler {
     private final NotificationCommandService notificationCommandService;
     private final NotificationQueryService notificationQueryService;
     private final WellnessWebSocketController webSocketController;
+    private final WellnessSummaryCommandService wellnessSummaryCommandService;
 
     @EventListener(AirQualityAlertEvent.class)
     public void on(AirQualityAlertEvent event) {
@@ -34,7 +39,7 @@ public class WellnessAlertEventHandler {
 
         var notificationId = notificationCommandService.handle(command);
         sendNotificationViaWebSocket(event.getVehicleId(), notificationId);
-
+        triggerSummaryGeneration(event.getVehicleId());
         System.out.println("Air quality notification created: " + event.getDescription());
     }
 
@@ -51,6 +56,7 @@ public class WellnessAlertEventHandler {
 
         Long notificationId=notificationCommandService.handle(command);
         sendNotificationViaWebSocket(event.getVehicleId(), notificationId);
+        triggerSummaryGeneration(event.getVehicleId());
         System.out.println("Pressure notification created: " + event.getDescription());
     }
 
@@ -67,6 +73,7 @@ public class WellnessAlertEventHandler {
 
         Long notificationId = notificationCommandService.handle(command);
         sendNotificationViaWebSocket(event.getVehicleId(), notificationId);
+        triggerSummaryGeneration(event.getVehicleId());
         System.out.println("Environmental notification created: " + event.getDescription());
     }
 
@@ -83,6 +90,7 @@ public class WellnessAlertEventHandler {
 
         Long notificationId = notificationCommandService.handle(command);
         sendNotificationViaWebSocket(event.getVehicleId(), notificationId);
+        triggerSummaryGeneration(event.getVehicleId());
         System.out.println("Impact notification created: " + event.getDescription());
     }
 
@@ -103,4 +111,14 @@ public class WellnessAlertEventHandler {
         }
     }
 
+    private void triggerSummaryGeneration(Long vehicleId) {
+        try {
+            // async, so it doesn't block process
+            CompletableFuture.runAsync(() ->
+                    wellnessSummaryCommandService.handle(new GenerateWellnessSummaryCommand(vehicleId))
+            );
+        } catch (Exception e) {
+            System.err.println("Failed to trigger wellness summary generation for vehicle " + vehicleId + ": " + e.getMessage());
+        }
+    }
 }
