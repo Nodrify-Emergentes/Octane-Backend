@@ -5,6 +5,7 @@ import nodrify.inc.octane.vehicles.domain.model.entities.Vehicle;
 import nodrify.inc.octane.vehicles.interfaces.acl.VehiclesContextFacade;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,6 +27,14 @@ public class ExternalVehiclesService {
     public Optional<Vehicle> fetchVehicleById(Long vehicleId){
         try{
             return vehiclesContextFacade.fetchVehicleById(vehicleId);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Vehicle> fetchVehiclesByOwnerId(Long ownerId) {
+        try {
+            return vehiclesContextFacade.fetchVehiclesByOwnerId(ownerId);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
