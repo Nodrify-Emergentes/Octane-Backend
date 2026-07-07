@@ -3,7 +3,9 @@ package nodrify.inc.octane.wellness.interfaces.rest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import nodrify.inc.octane.wellness.domain.model.commands.GenerateWellnessSummaryCommand;
+import nodrify.inc.octane.wellness.domain.model.queries.GetAllWellnessSummariesByOwnerIdQuery;
 import nodrify.inc.octane.wellness.domain.model.queries.GetWellnessSummaryByVehicleIdQuery;
+import nodrify.inc.octane.wellness.domain.model.valueobjects.OwnerId;
 import nodrify.inc.octane.wellness.domain.model.valueobjects.VehicleId;
 import nodrify.inc.octane.wellness.domain.services.WellnessSummaryCommandService;
 import nodrify.inc.octane.wellness.domain.services.WellnessSummaryQueryService;
@@ -11,6 +13,8 @@ import nodrify.inc.octane.wellness.interfaces.rest.resources.WellnessSummaryReso
 import nodrify.inc.octane.wellness.interfaces.rest.transform.WellnessSummaryResourceFromEntityAssembler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/vehicles")
@@ -55,5 +59,24 @@ public class WellnessSummaryController {
         var wellnessSummaryEntity = wellnessSummary.get();
         var wellnessSummaryResource = WellnessSummaryResourceFromEntityAssembler.toResourceFromEntity(wellnessSummaryEntity);
         return ResponseEntity.ok(wellnessSummaryResource);
+    }
+
+    @GetMapping("/owner/{ownerId}/wellness-summaries")
+    @Operation(summary = "Get wellness summaries for all vehicles of an owner", description = "Retrieve wellness summaries for all vehicles owned by a specific owner ID")
+    public ResponseEntity<List<WellnessSummaryResource>> getWellnessSummariesByOwnerId(@PathVariable Long ownerId) {
+        var id = new OwnerId(ownerId);
+
+        var getAllWellnessSummariesByOwnerIdQuery = new GetAllWellnessSummariesByOwnerIdQuery(id);
+        var wellnessSummaries = wellnessSummaryQueryService.handle(getAllWellnessSummariesByOwnerIdQuery);
+
+        if (wellnessSummaries.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var wellnessSummaryResources = wellnessSummaries.stream()
+                .map(WellnessSummaryResourceFromEntityAssembler::toResourceFromEntity)
+                .toList();
+
+        return ResponseEntity.ok(wellnessSummaryResources);
     }
 }
