@@ -8,11 +8,11 @@
         <version>3.5.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>nrg.inc</groupId>
-    <artifactId>bykerz</artifactId>
+    <groupId>nodrify.inc</groupId>
+    <artifactId>octane</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>bykerz</name>
-    <description>bykerz</description>
+    <name>octane</name>
+    <description>octane</description>
     <url/>
     <licenses>
         <license/>
@@ -110,6 +110,13 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- Google Gemini AI -->
+        <dependency>
+            <groupId>com.google.genai</groupId>
+            <artifactId>google-genai</artifactId>
+            <version>1.60.0</version>
         </dependency>
 
     </dependencies>
